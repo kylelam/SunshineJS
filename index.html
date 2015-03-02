@@ -1,0 +1,215 @@
+<html>
+<head>
+	<title>Sunshine</title>
+		<!-- Include meta tag to ensure proper rendering and touch zooming -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Include jQuery Mobile stylesheets -->
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<!-- Include the jQuery library -->
+	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<!-- Include the jQuery Mobile library -->
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+
+	<div data-role="page" id="pageone" >
+		<div data-role="header">
+			<h1>Sunshine</h1>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			
+
+			<ul data-role="listview" id="weeklyForecast">
+				
+			</ul>
+		</div>
+
+		<div data-role="footer">
+			<h6>Data pulled from open weather map</h6>
+		</div>
+	</div> 
+
+
+	<script>
+		$.getJSON( "http://api.openweathermap.org/data/2.5/forecast/daily?q=London&mode=json&units=metric&cnt=7", function( weeklyForecastJsonObj ) {
+
+			var weeklyForecastURLArray = [];
+			var weeklyForecastIconLinkArray = [];
+			var weeklyForecastTitleArray = [];
+			var weeklyForecastDetailArray = [];
+			var weeklyForecastMinTemp = [];
+			var weeklyForecastMaxTemp = [];
+			//weeklyForecastJsonObj = JSON.parse(data);
+			for (i = 0; i < 7; i++) { 
+   				var dailyDate = weeklyForecastJsonObj.list[i].dt;
+				var dailyTemp = weeklyForecastJsonObj.list[i].temp.day;
+				var dailyMin = weeklyForecastJsonObj.list[i].temp.min;
+				var dailyMax = weeklyForecastJsonObj.list[i].temp.max;
+				var dailyPressure = weeklyForecastJsonObj.list[i].pressure;
+				var dailyWeather = weeklyForecastJsonObj.list[i].weather[0].main;
+				var dailyWeatherIcon = weeklyForecastJsonObj.list[i].weather[0].icon;
+
+				var timestamp = dailyDate;
+				var a = new Date(timestamp*1000);
+				var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+				var dayOfWeek = days[a.getDay()]
+
+
+				weeklyForecastIconLinkArray.push("http://openweathermap.org/img/w/"+dailyWeatherIcon+".png");
+
+
+				weeklyForecastTitleArray.push( dayOfWeek );
+
+				weeklyForecastDetailArray.push( dailyWeather );
+
+				weeklyForecastMinTemp.push( dailyMin );
+
+				weeklyForecastMaxTemp.push( dailyMax );
+
+
+		
+			}
+
+
+
+
+
+			for (i = 0; i < 7; i++){	//to add the elenment to list
+				var weeklyForecastList = document.getElementById("weeklyForecast");
+				var weeklyForecastItem = document.createElement("li");
+				var weeklyForecastLink = document.createElement("a");
+				weeklyForecastLink.href = "#";
+				
+				//create image add to alink
+				var weeklyForecastImg = document.createElement("img");
+				weeklyForecastImg.src = weeklyForecastIconLinkArray[i];
+				weeklyForecastLink.appendChild(weeklyForecastImg);
+
+/*
+				//Title
+				var weeklyForecastTitle = document.createElement("h2");
+				var weeklyForecastTitleText = document.createTextNode(weeklyForecastTitleArray[i]);
+				weeklyForecastTitle.appendChild(weeklyForecastTitleText);
+				weeklyForecastLink.appendChild(weeklyForecastTitle);
+
+				//detail
+				var weeklyForecastDetail = document.createElement("p");
+				var weeklyForecastDetailText = document.createTextNode(weeklyForecastDetailArray[i]);
+				weeklyForecastDetail.appendChild(weeklyForecastDetailText);
+				weeklyForecastLink.appendChild(weeklyForecastDetail);
+*/
+
+
+				//create table in alink
+				var weeklyForecastItemTable = document.createElement("table");
+				weeklyForecastItemTable.cellpadding="0";
+				weeklyForecastItemTable.cellspacing="0";
+				weeklyForecastItemTable.border="0";
+				weeklyForecastItemTable.width="100%";
+
+				//create 1st tr row
+				var weeklyForecastItemTableTr1 = document.createElement("tr");
+				//create 1st tr 1st td cor and add to tr1
+				var weeklyForecastItemTableTr1Td1 = document.createElement("td");
+				var weeklyForecastItemTableTr1Td1H2 = document.createElement("h2");
+				var weeklyForecastItemTableTr1Td1H2Text = document.createTextNode(weeklyForecastTitleArray[i]);
+				weeklyForecastItemTableTr1Td1H2.appendChild(weeklyForecastItemTableTr1Td1H2Text);
+				weeklyForecastItemTableTr1Td1.appendChild(weeklyForecastItemTableTr1Td1H2);
+				weeklyForecastItemTableTr1.appendChild(weeklyForecastItemTableTr1Td1);
+
+				//create 1st tr 2nd td cor and add to tr1
+				var weeklyForecastItemTableTr1Td2 = document.createElement("td");
+				weeklyForecastItemTableTr1Td2.width="15%";
+				var weeklyForecastItemTableTr1Td2H2 = document.createElement("h2");
+				weeklyForecastItemTableTr1Td2H2.style="text-align:center";
+				var weeklyForecastItemTableTr1Td2H2Text = document.createTextNode(weeklyForecastMaxTemp[i]+"°");
+				weeklyForecastItemTableTr1Td2H2.appendChild(weeklyForecastItemTableTr1Td2H2Text);
+				weeklyForecastItemTableTr1Td2.appendChild(weeklyForecastItemTableTr1Td2H2);
+				weeklyForecastItemTableTr1.appendChild(weeklyForecastItemTableTr1Td2);
+
+				//add tr1 into table
+				weeklyForecastItemTable.appendChild(weeklyForecastItemTableTr1);
+
+
+				//create 2nd tr row
+				var weeklyForecastItemTableTr2 = document.createElement("tr");
+				//create 2nd tr 1st td cor and add to tr2
+				var weeklyForecastItemTableTr2Td1 = document.createElement("td");
+				var weeklyForecastItemTableTr2Td1H2 = document.createElement("p");
+				//weeklyForecastItemTableTr2Td1H2.style = "padding-left: 5px;";
+				var weeklyForecastItemTableTr2Td1H2Text = document.createTextNode( /*"　"+*/ weeklyForecastDetailArray[i]);
+				weeklyForecastItemTableTr2Td1H2.appendChild(weeklyForecastItemTableTr2Td1H2Text);
+				weeklyForecastItemTableTr2Td1.appendChild(weeklyForecastItemTableTr2Td1H2);
+				weeklyForecastItemTableTr2.appendChild(weeklyForecastItemTableTr2Td1);
+
+				//create 2nd tr 2nd td cor and add to tr2
+				var weeklyForecastItemTableTr2Td2 = document.createElement("td");
+				weeklyForecastItemTableTr2Td2.width="15%";
+				var weeklyForecastItemTableTr2Td2H2 = document.createElement("p");
+				weeklyForecastItemTableTr2Td2H2.style="text-align:center";
+				var weeklyForecastItemTableTr2Td2H2Text = document.createTextNode(weeklyForecastMinTemp[i]+"°");
+				weeklyForecastItemTableTr2Td2H2.appendChild(weeklyForecastItemTableTr2Td2H2Text);
+				weeklyForecastItemTableTr2Td2.appendChild(weeklyForecastItemTableTr2Td2H2);
+				weeklyForecastItemTableTr2.appendChild(weeklyForecastItemTableTr2Td2);
+
+				//add tr2 into table
+				weeklyForecastItemTable.appendChild(weeklyForecastItemTableTr2);
+
+
+
+
+
+
+				//add table back to alink
+				weeklyForecastLink.appendChild(weeklyForecastItemTable);
+
+				//add alink back to li
+				weeklyForecastItem.appendChild(weeklyForecastLink);
+				weeklyForecastList.appendChild(weeklyForecastItem);
+				//$("#weeklyForecast").append(weeklyForecastItem);
+
+			}
+
+			$("#weeklyForecast").listview("refresh");
+		});
+
+	</script>
+
+
+
+	<script>
+	/*
+		var weeklyForecastList = document.getElementById("weeklyForecast");
+		var weeklyForecastItem = document.createElement("li");
+		var weeklyForecastLink = document.createElement("a");
+		weeklyForecastLink.href = "#";
+		var weeklyForecastText = document.createTextNode("New weeklyForecast");
+		weeklyForecastLink.appendChild(weeklyForecastText);
+		weeklyForecastItem.appendChild(weeklyForecastLink);
+		weeklyForecastList.appendChild(weeklyForecastItem);
+		*/
+
+	</script>
+
+</body>
+
+
+</html>
+
+
+<!--
+
+
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody><tr>
+     <td><h2>Saturday</h2></td>
+    <td width="10%"><h2 style="text-align:center">10.18°</h2></td>
+  </tr>
+  <tr>
+    <td><p>&nbsp;Rain</p></td>
+    <td width="10%"><p style="text-align:center">6.75°</p></td>
+  </tr>
+</tbody></table>
+
+-->
