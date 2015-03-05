@@ -159,13 +159,15 @@
 		}
 
 		function getUdacityIconURL(dailyWeatherIcon, type) {
+			
+			var baseURL="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/";
+			var fileType=".png";
 
 			if ( type == "ICON" ) {
-				return "https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/ic_" + getUdacityIconName(dailyWeatherIcon) + ".png"
+				return baseURL + "ic_" + getUdacityIconName(dailyWeatherIcon) + fileType;
 			} else {
 				var name=getUdacityIconName(dailyWeatherIcon)+"";
-				return "https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_" + 
-						name.replace("cloudy", "clouds") + ".png";
+				return baseURL + "art_" + name.replace("cloudy", "clouds") + fileType;
 			}
 		}
 
