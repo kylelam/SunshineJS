@@ -12,7 +12,7 @@
 </head>
 <body>
 
-	<div data-role="page" id="pageone" >
+	<div data-role="page" id="list" >
 		<div data-role="header" data-position="fixed" data-theme="b">
 			<img class="ui-btn-left" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/ic_logo.png" style="height:80%">
 			<h2> </h2>
@@ -23,13 +23,13 @@
 
 			<ul data-role="listview" id="weeklyForecast">
 				<li data-theme="b" id="todaysItemHolder">
-					<a href="#">
+					<a href="#detail" onclick="updateDetail(0);">
 						<table width="100%">
 							<tr>
 								<td width="20%">
 								</td>
 								<td width="40%">
-									<h2 style="color:white" id="todaysDate"> Tuesday, March 3</h2>
+									<h2 style="color:white" id="todaysDate">Tuesday, March 3</h2>
 
 									<p style="color:white; font-size:600%;margin-top: 0px;margin-bottom: 0px;" id="todaysMax">18</p>
 									<p style="color:white; font-size:300%;margin-top: 0px;margin-bottom: 0px;" id="todaysMin">10</p>
@@ -54,6 +54,44 @@
 		</div>
 	</div> 
 
+	<div data-role="page" id="detail" >
+		<div data-role="header" data-position="fixed" data-theme="b">
+			<a href="#list">&lt;</a>
+			<img class="ui-btn-left" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/ic_logo.png" style="height:80%">
+			<h2> </h2>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			
+
+			<table width="100%">
+				<tr>
+					<td width="25%" valign="top">
+						<p style="color:DimGray; font-size:130%;margin-top: 0px;margin-bottom: 0px;" id="detailsDayOfWeek">Tuesday</p>
+						<p style="color:Gray; font-size:100%;margin-top: 0px;margin-bottom: 0px;" id="detailsDateMonth">March 3</p>
+						
+					</td>
+					<td width="45%">
+						<p style="color:Black; font-size:500%;margin-top: 0px;margin-bottom: 0px;" id="detailsMax">18</p>
+						<p style="color:DimGray; font-size:300%;margin-top: 0px;margin-bottom: 0px;" id="detailsMin">10</p>
+						<p style="color:DimGray; font-size:110%;margin-top: 5;margin-bottom: 5;" id="detailsHumidity">Humidity: 0%</p>
+						<p style="color:DimGray; font-size:110%;margin-top: 5px;margin-bottom: 5px;" id="detailsPressure">Pressure: 0hPa</p>
+						<p style="color:DimGray; font-size:110%;margin-top: 5px;margin-bottom: 5px;" id="detailsWind">Wind: 0km/h</p>
+						
+					</td>
+					<td width="30%" align="center" valign="top">
+						<div>
+							<img style="min-width: 100%; max-width:100%; height: auto;" id="detailsIcon" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/art_clear.png">
+						</div>
+						<p style="color:Gray; font-size:100%;margin-top: 0px;margin-bottom: 0px;" id="detailsDetail">Sunny</p>
+					</td>
+
+				</tr>
+			</table>
+		</div>
+
+
+	</div> 
 
 	<script>
 
@@ -117,12 +155,16 @@
 
 		}
 
-
-		function createListItem (imageLink, title, detail, max, min){
+		function createListItem (imageLink, title, detail, max, min, itemNumber){
 				var weeklyForecastItem = document.createElement("li");
 				//weeklyForecastItem["data-theme"]="b";
 				var weeklyForecastLink = document.createElement("a");
-				weeklyForecastLink.href = "#";
+				weeklyForecastLink.href="#detail";
+				weeklyForecastLink.onclick=function(){
+					
+
+					updateDetail(itemNumber);
+				};
 				
 				//create image add to alink
 				var weeklyForecastImg = document.createElement("img");
@@ -176,14 +218,13 @@
 				var weeklyForecastList = document.getElementById("weeklyForecast");  //ul
 				var weeklyForecastItem = createListItem(	weeklyForecastIconLinkArray[i],weeklyForecastTitleArray[i],
 															weeklyForecastDetailArray[i],weeklyForecastMaxTemp[i],
-															weeklyForecastMinTemp[i]);
+															weeklyForecastMinTemp[i], i);
 				weeklyForecastList.appendChild(weeklyForecastItem);
 				//$("#weeklyForecast").append(weeklyForecastItem);
 
 			}
 
 		}
-
 
 		function clearList(){
 			var weeklyForecastList = document.getElementById("weeklyForecast");  //ul
@@ -202,12 +243,12 @@
 
 		}
 
-
-
 		function parseWeatherJsonString(jsonString){
 
 
 			weeklyForecastJsonObj = JSON.parse(jsonString);
+			
+			
 			weeklyForecastURLArray = [];
 			weeklyForecastIconLinkArray = [];
 			weeklyForecastArtLinkArray = [];
@@ -215,7 +256,12 @@
 			weeklyForecastDetailArray = [];
 			weeklyForecastMinTemp = [];
 			weeklyForecastMaxTemp = [];
-			todaysDate="";
+			weeklyForecastDayOfWeek = [];
+			weeklyForecastDate = [];
+			weeklyForecastMonth = [];
+			weeklyForecastHumidity = [];
+			weeklyForecastPressure = [];
+			weeklyForecastWind = [];
 			//weeklyForecastJsonObj = JSON.parse(data);
 
 			for (i = 0; i < 7; i++) { 
@@ -224,36 +270,40 @@
 				var dailyMin = weeklyForecastJsonObj.list[i].temp.min;
 				var dailyMax = weeklyForecastJsonObj.list[i].temp.max;
 				var dailyPressure = weeklyForecastJsonObj.list[i].pressure;
+				var dailyHumidity = weeklyForecastJsonObj.list[i].humidity;
+				var dailyWind = weeklyForecastJsonObj.list[i].speed;
 				var dailyWeather = weeklyForecastJsonObj.list[i].weather[0].main;
 				var dailyWeatherIcon = weeklyForecastJsonObj.list[i].weather[0].icon;
 
 				var timestamp = dailyDate;
 				var a = new Date(timestamp*1000);
-				var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-				var dayOfWeek = days[a.getDay()]
-				if (i==0)
-					todaysDate = dayOfWeek + ", " + 
-									['January', 'February', 'March', 'April', 'May', 'June', 'July', 
-									  'August', 'September', 'October', 'November', 'December'][a.getMonth()-1] + " " +
-									  a.getDate();
+				var dayOfWeek = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][a.getDay()]
+				var date = a.getDate();
+				var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
+							'August', 'September', 'October', 'November', 'December'][a.getMonth()-1];
 
 				weeklyForecastIconLinkArray.push( getUdacityIconURL(dailyWeatherIcon, "ICON" ) );
 				weeklyForecastArtLinkArray.push( getUdacityIconURL(dailyWeatherIcon, "ART" ) );
 				weeklyForecastTitleArray.push( dayOfWeek );
 				weeklyForecastDetailArray.push( dailyWeather );
-				weeklyForecastMinTemp.push( (dailyMin+0.05).toFixed(1) );
-				weeklyForecastMaxTemp.push( (dailyMax+0.05).toFixed(1) );
+				weeklyForecastMinTemp.push( (dailyMin+0.5).toFixed(0) );
+				weeklyForecastMaxTemp.push( (dailyMax+0.5).toFixed(0) );
 				
+				weeklyForecastDayOfWeek.push( dayOfWeek );
+				weeklyForecastDate.push( date );
+				weeklyForecastMonth.push( month );
+				weeklyForecastHumidity.push( dailyHumidity );
+				weeklyForecastPressure.push( dailyPressure );
+				weeklyForecastWind.push( "" );
 
 			}
 
 
 		}
 
-
 		function updateToday(){
-			document.getElementById("todaysDate").innerHTML = todaysDate;
-
+			document.getElementById("todaysDate").innerHTML = weeklyForecastDayOfWeek[0] + ", " + weeklyForecastMonth[0] + " " + weeklyForecastDate[0];
+			
 			document.getElementById("todaysMax").innerHTML = weeklyForecastMaxTemp[0]+"°";
 			document.getElementById("todaysMin").innerHTML = weeklyForecastMinTemp[0]+"°";
 			document.getElementById("todaysIcon").src = weeklyForecastArtLinkArray[0];
@@ -262,6 +312,23 @@
 
 		}
 
+		function updateDetail(day){
+			
+			document.getElementById("detailsMax").innerHTML = weeklyForecastMaxTemp[day]+"°";
+			document.getElementById("detailsMin").innerHTML = weeklyForecastMinTemp[day]+"°";
+			document.getElementById("detailsIcon").src = weeklyForecastArtLinkArray[day];
+			document.getElementById("detailsDetail").innerHTML = weeklyForecastDetailArray[day];
+			
+			document.getElementById("detailsDayOfWeek").innerHTML = weeklyForecastDayOfWeek[day];
+			document.getElementById("detailsDateMonth").innerHTML = weeklyForecastMonth[day]+ " " + weeklyForecastDate[day];
+			
+			
+
+			document.getElementById("detailsHumidity").innerHTML = "Humidity: " + weeklyForecastHumidity[day]+ "%";
+			document.getElementById("detailsPressure").innerHTML = "Pressure: " + weeklyForecastPressure[day]+ "hPa";
+			document.getElementById("detailsWind").innerHTML = "Wind: " + weeklyForecastWind[day]+ "km/h";
+			
+		}
 
 		$.getJSON( "http://api.openweathermap.org/data/2.5/forecast/daily?q=London&mode=json&units=metric&cnt=7", function( weeklyForecastJsonObj ) {
 
@@ -270,7 +337,6 @@
 			var jsonString=JSON.stringify(weeklyForecastJsonObj);
 
 			parseWeatherJsonString(jsonString);
-
 
 			updateToday();
 
@@ -283,38 +349,9 @@
 
 
 
-	<script>
-	/*
-		var weeklyForecastList = document.getElementById("weeklyForecast");
-		var weeklyForecastItem = document.createElement("li");
-		var weeklyForecastLink = document.createElement("a");
-		weeklyForecastLink.href = "#";
-		var weeklyForecastText = document.createTextNode("New weeklyForecast");
-		weeklyForecastLink.appendChild(weeklyForecastText);
-		weeklyForecastItem.appendChild(weeklyForecastLink);
-		weeklyForecastList.appendChild(weeklyForecastItem);
-		*/
-
-	</script>
 
 </body>
 
 
 </html>
 
-
-<!--
-
-
-<table cellpadding="0" cellspacing="0" width="100%" border="0">
-  <tbody><tr>
-     <td><h2>Saturday</h2></td>
-    <td width="10%"><h2 style="text-align:center">10.18°</h2></td>
-  </tr>
-  <tr>
-    <td><p>&nbsp;Rain</p></td>
-    <td width="10%"><p style="text-align:center">6.75°</p></td>
-  </tr>
-</tbody></table>
-
--->
