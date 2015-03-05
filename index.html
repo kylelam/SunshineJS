@@ -293,8 +293,8 @@
 				weeklyForecastDate.push( date );
 				weeklyForecastMonth.push( month );
 				weeklyForecastHumidity.push( dailyHumidity );
-				weeklyForecastPressure.push( dailyPressure );
-				weeklyForecastWind.push( "" );
+				weeklyForecastPressure.push( (dailyPressure+0.5).toFixed(0) );
+				weeklyForecastWind.push( dailyWind );
 
 			}
 
