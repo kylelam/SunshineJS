@@ -22,7 +22,7 @@
 			
 
 			<ul data-role="listview" id="weeklyForecast">
-				<li data-theme="b">
+				<li data-theme="b" id="todaysItemHolder">
 					<a href="#">
 						<table width="100%">
 							<tr>
@@ -173,8 +173,10 @@
 
 		function appendToListFromTo(x, y){
 			for (i = x; i <= y; i++){	//to add the elenment to list
-				var weeklyForecastList = document.getElementById("weeklyForecast");
-				var weeklyForecastItem = createListItem(weeklyForecastIconLinkArray[i],weeklyForecastTitleArray[i],weeklyForecastDetailArray[i],weeklyForecastMaxTemp[i],weeklyForecastMinTemp[i]);
+				var weeklyForecastList = document.getElementById("weeklyForecast");  //ul
+				var weeklyForecastItem = createListItem(	weeklyForecastIconLinkArray[i],weeklyForecastTitleArray[i],
+															weeklyForecastDetailArray[i],weeklyForecastMaxTemp[i],
+															weeklyForecastMinTemp[i]);
 				weeklyForecastList.appendChild(weeklyForecastItem);
 				//$("#weeklyForecast").append(weeklyForecastItem);
 
@@ -183,9 +185,20 @@
 		}
 
 
-		function refreshPage(){
+		function clearList(){
+			var weeklyForecastList = document.getElementById("weeklyForecast");  //ul
+			
+			
+			var todaysItemHolder = document.getElementById("todaysItemHolder"); 
+			weeklyForecastList.innerHTML = "";
+			
+			weeklyForecastList.appendChild(todaysItemHolder);
+		}
 
-						$("#weeklyForecast").listview("refresh");
+		function refreshPage(){
+			
+
+			$("#weeklyForecast").listview("refresh");
 
 		}
 
@@ -252,6 +265,8 @@
 
 		$.getJSON( "http://api.openweathermap.org/data/2.5/forecast/daily?q=London&mode=json&units=metric&cnt=7", function( weeklyForecastJsonObj ) {
 
+			clearList();
+
 			var jsonString=JSON.stringify(weeklyForecastJsonObj);
 
 			parseWeatherJsonString(jsonString);
@@ -259,7 +274,7 @@
 
 			updateToday();
 
-			appendToListFromTo(0,6);
+			appendToListFromTo(1,6);
 
 			refreshPage();
 		});
