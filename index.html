@@ -59,27 +59,36 @@
 			<a href="#list">&lt;</a>
 			<img class="ui-btn-left" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/ic_logo.png" style="height:80%">
 			<h2> </h2>
+			
+			<a href="#popupMenu" data-rel="popup" data-transition="slidedown">...</a>
+			<div data-role="popup" id="popupMenu" data-theme="a">
+			        <ul data-role="listview" data-inset="true" style="min-width:210px;">
+			            <li><a href="#">Edit</a></li>
+			            <li><a href="#">Disable</a></li>
+			            <li><a href="#">Delete</a></li>
+			        </ul>
+			</div>
 		</div>
 
 		<div data-role="main" class="ui-content">
-			
 
-			<table width="100%">
+			<table>
 				<tr>
-					<td width="25%" valign="top">
+					<td style="width:50%" valign="top">
 						<p style="color:DimGray; font-size:130%;margin-top: 0px;margin-bottom: 0px;" id="detailsDayOfWeek">Tuesday</p>
 						<p style="color:Gray; font-size:100%;margin-top: 0px;margin-bottom: 0px;" id="detailsDateMonth">March 3</p>
 						
 					</td>
-					<td width="45%">
-						<p style="color:Black; font-size:500%;margin-top: 0px;margin-bottom: 0px;" id="detailsMax">18</p>
-						<p style="color:DimGray; font-size:300%;margin-top: 0px;margin-bottom: 0px;" id="detailsMin">10</p>
+				</tr><tr>
+					<td style="width:50%">
+						<p style="color:Black; font-size:600%;margin-top: 0px;margin-bottom: 0px;" id="detailsMax">18</p>
+						<p style="color:DimGray; font-size:350%;margin-top: 0px;margin-bottom: 0px;" id="detailsMin">10</p>
 						<p style="color:DimGray; font-size:110%;margin-top: 5;margin-bottom: 5;" id="detailsHumidity">Humidity: 0%</p>
 						<p style="color:DimGray; font-size:110%;margin-top: 5px;margin-bottom: 5px;" id="detailsPressure">Pressure: 0hPa</p>
 						<p style="color:DimGray; font-size:110%;margin-top: 5px;margin-bottom: 5px;" id="detailsWind">Wind: 0km/h</p>
 						
 					</td>
-					<td width="30%" align="center" valign="top">
+					<td style="width:50%" align="center" valign="top">
 						<div>
 							<img style="min-width: 100%; max-width:100%; height: auto;" id="detailsIcon" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/art_clear.png">
 						</div>
@@ -93,6 +102,9 @@
 
 	</div> 
 
+
+
+	
 	<script>
 
 		function createTable(title, detail, max, min) {
@@ -347,6 +359,9 @@
 
 	</script>
 
+
+
+	
 
 
 
