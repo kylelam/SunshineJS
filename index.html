@@ -163,6 +163,8 @@
 
 	
 	<script>
+	
+	
 
 		function createTable(title, detail, max, min) {
 					//create table in alink
@@ -370,16 +372,6 @@
 
 		}
 
-		function updateToday(){
-			document.getElementById("todaysDate").innerHTML = weeklyForecastDayOfWeek[0] + ", " + weeklyForecastMonth[0] + " " + weeklyForecastDate[0];
-			
-			document.getElementById("todaysMax").innerHTML = weeklyForecastMaxTemp[0]+"°";
-			document.getElementById("todaysMin").innerHTML = weeklyForecastMinTemp[0]+"°";
-			document.getElementById("todaysIcon").src = weeklyForecastArtLinkArray[0];
-			document.getElementById("todaysDetail").innerHTML = weeklyForecastDetailArray[0];
-
-
-		}
 
 		function updateDetail(day){
 			
@@ -398,21 +390,105 @@
 			document.getElementById("detailsWind").innerHTML = "Wind: " + weeklyForecastWind[day]+ "km/h";
 			
 		}
+		
 
-		$.getJSON( "http://api.openweathermap.org/data/2.5/forecast/daily?q=London&mode=json&units=metric&cnt=7", function( weeklyForecastJsonObj ) {
+		function updateToday(){
+			document.getElementById("todaysDate").innerHTML = weeklyForecastDayOfWeek[0] + ", " + weeklyForecastMonth[0] + " " + weeklyForecastDate[0];
+			
+			document.getElementById("todaysMax").innerHTML = weeklyForecastMaxTemp[0]+"°";
+			document.getElementById("todaysMin").innerHTML = weeklyForecastMinTemp[0]+"°";
+			document.getElementById("todaysIcon").src = weeklyForecastArtLinkArray[0];
+			document.getElementById("todaysDetail").innerHTML = weeklyForecastDetailArray[0];
 
-			clearList();
 
-			var jsonString=JSON.stringify(weeklyForecastJsonObj);
+		}
 
-			parseWeatherJsonString(jsonString);
+		function getAndParseJSON( URL ){
 
+			$.getJSON( URL, function( weeklyForecastJsonObj ) {
+
+				clearList();
+
+				var jsonString=JSON.stringify(weeklyForecastJsonObj);
+
+				parseWeatherJsonString(jsonString);
+
+				localStorage.setItem("jsonString", jsonString);
+				
+				var currentDate = new Date();
+				var currentUnixTime = Date.parse(currentDate)/1000;
+				localStorage.setItem("lastUpdate", currentUnixTime);
+				
+				var lastUpdateDateString = "Last Update: " + currentDate.toLocaleDateString() + " " + currentDate.toLocaleTimeString();
+				document.getElementById("lastUpdate").innerHTML = lastUpdateDateString;
+				
+				localStorage.setItem("lastUpdateDateString", lastUpdateDateString);
+				
+			
+				updateView();
+				
+
+			});
+		}
+		
+		function updateView(){
+			
 			updateToday();
 
 			appendToListFromTo(1,6);
 
 			refreshPage();
-		});
+			
+		}
+		
+		function URLBuilder(zipcode){
+			
+			return "http://api.openweathermap.org/data/2.5/forecast/daily?q="+zipcode+"&mode=json&units=metric&cnt=7";
+		}
+		
+		
+		
+		
+		var URL = URLBuilder(94112);
+		var expiredTimeInHr = 1;
+		
+		// Check browser support
+		if (typeof(Storage) != "undefined") {
+			
+			var currentDate = new Date();
+			var currentUnixTime = Date.parse(currentDate)/1000;
+			
+			//check if first time
+			if (localStorage.getItem("lastUpdate")==null){
+				localStorage.setItem("lastUpdate", 0);
+			}
+			
+			var expireTime = parseInt(localStorage.getItem("lastUpdate")) + (expiredTimeInHr * 3600);
+			//check if expired
+			
+			if ( expireTime < currentUnixTime ){
+
+				getAndParseJSON(URL);
+			} 
+			
+			if (localStorage.getItem("jsonString")!=null){
+				
+				var jsonString = localStorage.getItem("jsonString");
+				
+				parseWeatherJsonString(jsonString);
+				
+				//update last update
+				var lastUpdateDate = new Date();
+				lastUpdateDate.setTime( Date.parse(parseInt(localStorage.getItem("lastUpdate"))*1000 ));
+				document.getElementById("lastUpdate").innerHTML = localStorage.getItem("lastUpdateDateString");
+			
+				updateView();
+			
+			}
+			
+		} else {
+		    getAndParseJSON(URL);
+		}
 
 	</script>
 
