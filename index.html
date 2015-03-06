@@ -16,6 +16,13 @@
 		<div data-role="header" data-position="fixed" data-theme="b">
 			<img class="ui-btn-left" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/ic_logo.png" style="height:80%">
 			<h2> </h2>
+			<a class="ui-btn-right" href="#popupMenu" data-rel="popup" data-transition="slidedown">...</a>
+			<div data-role="popup" id="popupMenu" data-theme="a">
+			        <ul data-role="listview" data-inset="true" style="min-width:210px;">
+			            <li><a href="#maps">View Location</a></li>
+			            <li><a href="#settings">Settings</a></li>
+			        </ul>
+			</div>
 		</div>
 
 		<div data-role="main" class="ui-content">
@@ -50,7 +57,7 @@
 		</div>
 
 		<div data-role="footer">
-			<h6>Data pulled from open weather map</h6>
+			<h6 id="lastUpdate">Data pulled from open weather map</h6>
 		</div>
 	</div> 
 
@@ -63,9 +70,7 @@
 			<a href="#popupMenu" data-rel="popup" data-transition="slidedown">...</a>
 			<div data-role="popup" id="popupMenu" data-theme="a">
 			        <ul data-role="listview" data-inset="true" style="min-width:210px;">
-			            <li><a href="#">Edit</a></li>
-			            <li><a href="#">Disable</a></li>
-			            <li><a href="#">Delete</a></li>
+			            <li><a href="#settings">Settings</a></li>
 			        </ul>
 			</div>
 		</div>
@@ -102,6 +107,59 @@
 
 	</div> 
 
+
+	<div data-role="page" id="settings" >
+		<div data-role="header" data-position="fixed" data-theme="b">
+			<a href="#list">&lt;</a>
+			<img class="ui-btn-left" src="https://raw.githubusercontent.com/kylelam/SunshineJS/master/res/ic_logo.png" style="height:80%">
+			<h2> </h2>
+		</div>
+
+		<div data-role="main" class="ui-content">
+
+			
+
+			<ul data-role="listview">
+				<li>
+				
+					<a href="#popupLogin" data-rel="popup" data-position-to="window" 
+						class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" data-transition="pop">
+						<h3>Location</h3>
+						<p>London, UK</p>
+					</a>
+				
+					<div data-role="popup" id="popupLogin" data-theme="a" class="ui-corner-all">
+						<form style="margin-bottom: 0px;">
+							<div style="padding:10px 20px;">
+								<h3 style="margin-top: 0px; margin-bottom: 0px;">Location</h3>
+								<hr>
+								<table width="100%">
+									<tr>
+										<input type="text" name="location" id="location" value="" placeholder="location" data-theme="a" style="margin-top: 0px; margin-bottom: 0px;">
+									</tr>
+									<tr>
+										<td width="50%">
+											<button style="margin-top: 0px; margin-bottom: 0px;">Cancel</button>
+										</td>
+										<td width="50%">
+											<button style="margin-top: 0px; margin-bottom: 0px;">OK</button>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</form>
+					</div>
+				</li>
+				
+				<li>
+					<h3>Temperature Unit</h3>
+					<p>Metric</p>
+				</li>
+			</ul>
+		</div>
+
+
+	</div> 
 
 
 	
@@ -292,7 +350,7 @@
 				var dayOfWeek = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][a.getDay()]
 				var date = a.getDate();
 				var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
-							'August', 'September', 'October', 'November', 'December'][a.getMonth()-1];
+							'August', 'September', 'October', 'November', 'December'][a.getMonth()];
 
 				weeklyForecastIconLinkArray.push( getUdacityIconURL(dailyWeatherIcon, "ICON" ) );
 				weeklyForecastArtLinkArray.push( getUdacityIconURL(dailyWeatherIcon, "ART" ) );
