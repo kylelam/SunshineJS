@@ -443,13 +443,13 @@
 		
 		function URLBuilder(zipcode){
 			
-			return "http://api.openweathermap.org/data/2.5/forecast/daily?q="+zipcode+"&mode=json&units=metric&cnt=7";
+			return "http://api.openweathermap.org/data/2.5/forecast/daily?q="+zipcode+"&mode=json&units=metric&cnt=7&APPID=dd0d20865737740466fe7a59fff524a1";
 		}
 		
 		
 		
 		
-		var URL = URLBuilder(94112);
+		var URL = "";
 		var expiredTimeInHr = 1;
 		
 		// Check browser support
@@ -457,11 +457,12 @@
 			
 			var currentDate = new Date();
 			var currentUnixTime = Date.parse(currentDate)/1000;
-			
 			//check if first time
 			if (localStorage.getItem("lastUpdate")==null){
 				localStorage.setItem("lastUpdate", 0);
+				localStorage.setItem("location", "94112, US");
 			}
+			URL = URLBuilder(localStorage.getItem("location"));
 			
 			var expireTime = parseInt(localStorage.getItem("lastUpdate")) + (expiredTimeInHr * 3600);
 			//check if expired
