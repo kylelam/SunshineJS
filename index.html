@@ -135,7 +135,7 @@
 								<hr>
 								<table width="100%">
 									<tr>
-										<input id="locationSelectionInput" type="text" name="location" id="location" value="" placeholder="location" data-theme="a" style="margin-top: 0px; margin-bottom: 0px;">
+										<input id="locationSelectionInput" type="text" name="location" value="" placeholder="location" data-theme="a" style="margin-top: 0px; margin-bottom: 0px;">
 									</tr>
 									<tr>
 										<td width="50%">
@@ -490,7 +490,7 @@
 				localStorage.setItem("lastUpdate", 0);
 				localStorage.setItem("location", "94112, US");
 			}
-			var currentLocation=localStorage.getItem("location");
+			currentLocation=localStorage.getItem("location");
 			URL = URLBuilder(currentLocation);
 			//update location
 			//locationSelectionString
