@@ -122,27 +122,27 @@
 			<ul data-role="listview">
 				<li>
 				
-					<a href="#popupLogin" data-rel="popup" data-position-to="window"
+					<a href="#popupLocation" data-rel="popup" data-position-to="window"
 						class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" data-transition="pop">
 						<h3>Location</h3>
-						<p>London, UK</p>
+						<p id="locationSelectionString">London, UK</p>
 					</a>
 				
-					<div data-role="popup" id="popupLogin" data-theme="a" class="ui-corner-all">
+					<div data-role="popup" id="popupLocation" data-theme="a" class="ui-corner-all">
 						
 							<div style="padding:10px 20px;">
 								<h3 style="margin-top: 0px; margin-bottom: 0px;">Location</h3>
 								<hr>
 								<table width="100%">
 									<tr>
-										<input type="text" name="location" id="location" value="" placeholder="location" data-theme="a" style="margin-top: 0px; margin-bottom: 0px;">
+										<input id="locationSelectionInput" type="text" name="location" id="location" value="" placeholder="location" data-theme="a" style="margin-top: 0px; margin-bottom: 0px;">
 									</tr>
 									<tr>
 										<td width="50%">
-											<button style="margin-top: 0px; margin-bottom: 0px;">Cancel</button>
+											<button style="margin-top: 0px; margin-bottom: 0px;" onclick="changeLocationCanceled();">Cancel</button>
 										</td>
 										<td width="50%">
-											<button style="margin-top: 0px; margin-bottom: 0px;">OK</button>
+											<button style="margin-top: 0px; margin-bottom: 0px;" onclick="changeLocation();">OK</button>
 										</td>
 									</tr>
 								</table>
@@ -309,8 +309,11 @@
 
 		function refreshPage(){
 			
-
-			$("#weeklyForecast").listview("refresh");
+			try{
+				$("#weeklyForecast").listview("refresh");
+			} finally {
+				return 0;
+			}
 
 		}
 
@@ -446,6 +449,31 @@
 			return "http://api.openweathermap.org/data/2.5/forecast/daily?q="+zipcode+"&mode=json&units=metric&cnt=7&APPID=dd0d20865737740466fe7a59fff524a1";
 		}
 		
+		function changeLocationCanceled(){
+			document.getElementById("locationSelectionInput").value=currentLocation;
+			$( "#popupLocation" ).popup( "close" );
+		}
+		
+		function changeLocation(){
+			
+			var newLocation = document.getElementById("locationSelectionInput").value;
+			var currentLocation=localStorage.getItem("location");
+			
+			if (newLocation != currentLocation){
+				currentLocation=newLocation;
+				localStorage.setItem("location", currentLocation);
+				localStorage.setItem("lastUpdate", 0);
+				document.getElementById("locationSelectionString").innerHTML=currentLocation;
+				URL = URLBuilder(currentLocation);
+				getAndParseJSON(URL);
+				updateView();
+				
+			}
+			
+			$( "#popupLocation" ).popup( "close" );
+			
+			
+		}
 		
 		
 		
@@ -462,7 +490,16 @@
 				localStorage.setItem("lastUpdate", 0);
 				localStorage.setItem("location", "94112, US");
 			}
-			URL = URLBuilder(localStorage.getItem("location"));
+			var currentLocation=localStorage.getItem("location");
+			URL = URLBuilder(currentLocation);
+			//update location
+			//locationSelectionString
+			//locationSelectionInput@value
+			document.getElementById("locationSelectionString").innerHTML=currentLocation;
+			document.getElementById("locationSelectionInput").value=currentLocation;
+			
+			
+			
 			
 			var expireTime = parseInt(localStorage.getItem("lastUpdate")) + (expiredTimeInHr * 3600);
 			//check if expired
